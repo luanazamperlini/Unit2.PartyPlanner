@@ -113,8 +113,56 @@ async function deleteEvent(id) {
       throw new Error("Event could not be deleted!");
     }
   } catch (error) {
-    console.error(error, "There was an error /DELETE event");
+    console.error(error, "There was an error /DELETE events");
   }
 }
 
 deleteEvent(2431);
+
+//Render Events
+//Render is just an UI - What you want to return when the page uploads
+
+function renderEvents() {
+  //if the event don't exist, return to the user "no event"
+  if (!state.events.length === 0) {
+    eventsList.innerHTML`<li>No Event Found`;
+  }
+  //map returns an array
+  const eventCards = state.events.map((event) => {
+    //create a variable to hold thr <li> and assign it a class
+    const eventCard = document.createElement("li");
+    //add a class to the <li>
+    eventCard.classList.add("event");
+    //
+    eventCard.innerHTML = `<h2>${event.name}</h2>
+    <h2>${event.name}</h2>
+    <h2>${event.date}</h2>
+    <h2>${event.time}</h2>
+    <h2>${event.location}</h2>
+    <h2>${event.description}</h2>
+    `;
+    //create the delete button
+    const deleteButton = document.createElement("button");
+    //add text on the delete button
+    deleteButton.textContent = "Delete Event";
+    //add delete button to the event card
+    eventCard.append(deleteButton);
+    //the function ""click", () =>" fires off the function when the user clicks on the delete Button
+    deleteButton.addEventListener("click", () => deleteEvent(event.id));
+
+    //every time we create something we need to return it
+    return eventCard;
+  });
+  //we need to replace all the nodes that we had and add to it
+  eventsList.replaceChildren(...eventCards);
+}
+
+//because all the code was asynchronicity, we need to call async/await to render it
+
+async function render() {
+  //fetch all the events
+  await getEvents();
+  //render events to the UI
+  render(events);
+  render();
+}
